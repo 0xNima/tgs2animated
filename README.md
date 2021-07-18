@@ -1,6 +1,6 @@
-# tgs2animated
-Converts animated Telegram stickers (*.tgs) to animated WEBPs (.webp) --> (With Python support)
+# tgs2animated(With Python support)
 
+Converts animated Telegram stickers (*.tgs) to animated WEBPs (.webp)
 ## Building from source
 
 1. Make sure you have g++, make and cmake installed
