@@ -35,8 +35,8 @@ WebpBuilder::~WebpBuilder() {
     }
     WebPAnimEncoderDelete(enc);
     ok = ImgIoUtilWriteFile(const_cast<char*>(fileName.c_str()), webp_data.bytes, webp_data.size);
-    if (ok) std::cout<<"output: "<<fileName<<std::endl;
-    if (ok) std::cout<<"["<<pic_num<<" frames, "<<(unsigned int)webp_data.size<<" bytes]"<<std::endl;
+    // if (ok) std::cout<<"output: "<<fileName<<std::endl;
+    // if (ok) std::cout<<"["<<pic_num<<" frames, "<<(unsigned int)webp_data.size<<" bytes]"<<std::endl;
     WebPDataClear(&webp_data);
 }
 void WebpBuilder::addFrame(rlottie::Surface& s) {
@@ -47,7 +47,7 @@ void WebpBuilder::addFrame(rlottie::Surface& s) {
     argbTorgba(s);
 
     if (enc == nullptr) {
-        std::cout<<"init encoder"<<std::endl;
+        // std::cout<<"init encoder"<<std::endl;
         enc = WebPAnimEncoderNew(width,height,&anim_config);
         ok = (enc != nullptr);
         if(!ok) {

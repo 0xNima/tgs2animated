@@ -18,8 +18,8 @@ bool render(const std::string &lottieData, const std::string &outputPath) {
     auto buffer = std::unique_ptr<uint32_t[]>(new uint32_t[DataHolder::mWidth * DataHolder::mHeight]);
     size_t frameCount = animation->totalFrame();
     size_t frameDuration = animation->duration()*1000/frameCount;
-    std::cout<<"frames = "<<animation->totalFrame()<<std::endl;
-    std::cout<<"framerate = "<<animation->frameRate()<<std::endl;
+    // std::cout<<"frames = "<<animation->totalFrame()<<std::endl;
+    // std::cout<<"framerate = "<<animation->frameRate()<<std::endl;
     WebpBuilder builder(outputPath, frameDuration);
     for (size_t i=0; i < frameCount; i++) {
         rlottie::Surface surface(buffer.get(), DataHolder::mWidth, DataHolder::mHeight, DataHolder::mWidth*4);
