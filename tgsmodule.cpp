@@ -25,18 +25,18 @@ bool convert(const std::string& filePath, const std::string& output) {
 }
 
 
-int task(std::string input, std::string output) {
+int task(std::string input, std::string output, int wh, int m, float q) {
     bool min_size = false;
-    int wh = 512, m = 0;
-    float q = 0;
     DataHolder data(q, m, min_size, wh, wh);
     return convert(input, output);
 }
 
 static PyObject* tgs_convert(PyObject* self, PyObject *args) {
     const char *a, *b;
-    PyArg_ParseTuple(args, "ss", &a, &b);
-    return PyBool_FromLong(task(a, b));
+    int wh = 512, m = 0;
+    float q = 0;
+    PyArg_ParseTuple(args, "ssiif", &a, &b, &wh, &m, &q);
+    return PyBool_FromLong(task(a, b, wh, m, q));
 };
 
 static PyMethodDef tgs_methods[] = {
