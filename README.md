@@ -56,7 +56,6 @@ Python 3.7.11 (default, Jul  3 2021, 17:58:19)
 [GCC 9.3.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import tgs
->>> tgs.convert("inputfile", "outputfile")
+>>> tgs.convert("inputfile", "outputfile", <wh>, <m>, <q>)
 True
 ```
-Note that [CLI arguments](#cli) are set to deafult for now. If you want to change any of them, you should modify `tgsmodule.cpp` and repeat step 5.
