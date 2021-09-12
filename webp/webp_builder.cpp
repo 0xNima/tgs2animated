@@ -9,7 +9,6 @@
 #include "webp_builder.h"
 
 WebpBuilder::WebpBuilder(const std::string &fileName, uint32_t timems) {
-
     WebPDataInit(&webp_data);
     WebPAnimEncoderOptionsInit(&anim_config);
     WebPConfigInit(&config);
@@ -22,59 +21,71 @@ WebpBuilder::WebpBuilder(const std::string &fileName, uint32_t timems) {
     this->fileName = fileName;
     this->width = DataHolder::mWidth;
     this->height = DataHolder::mHeight;
-
 }
+
 WebpBuilder::~WebpBuilder() {
+    WebPAnimEncoderDelete(enc);
+    std::cout << "size: " << webp_data.size << std::endl;
+    if (webp_data.size <= (500000)){
+        ok = ImgIoUtilWriteFile(const_cast<char*>(fileName.c_str()), webp_data.bytes, webp_data.size);
+    }
+    WebPDataClear(&webp_data);
+}
+
+bool WebpBuilder::finilize() {
     ok = ok && WebPAnimEncoderAdd(enc, nullptr, timestamp_ms, nullptr);
     if (!ok) {
         std::cout<<"Could not create WebPAnimEncoderAdd"<<std::endl;
     }
+
     ok = ok && WebPAnimEncoderAssemble(enc, &webp_data);
     if (!ok) {
         std::cout<<"Error during final animation assembly"<<std::endl;
     }
-    WebPAnimEncoderDelete(enc);
-    ok = ImgIoUtilWriteFile(const_cast<char*>(fileName.c_str()), webp_data.bytes, webp_data.size);
-    // if (ok) std::cout<<"output: "<<fileName<<std::endl;
-    // if (ok) std::cout<<"["<<pic_num<<" frames, "<<(unsigned int)webp_data.size<<" bytes]"<<std::endl;
-    WebPDataClear(&webp_data);
+
+    std::cout<<"current size: " << webp_data.size <<std::endl;
+    return (webp_data.size <= 500000);
 }
+
 void WebpBuilder::addFrame(rlottie::Surface& s) {
     if (ok) {
         ok = WebPValidateConfig(&config);
     }
+
     pic.use_argb = 1;
     argbTorgba(s);
 
-    if (enc == nullptr) {
-        // std::cout<<"init encoder"<<std::endl;
+    if(enc == nullptr) {
         enc = WebPAnimEncoderNew(width,height,&anim_config);
         ok = (enc != nullptr);
         if(!ok) {
             std::cout<<"Could not create WebpAnimEncoder object"<<std::endl;
         }
     }
-
     stride = (int64_t) 4 * width * sizeof(uint8_t);
 
     pic.width = width;
     pic.height = height;
 
+    
     ok = WebPPictureImportRGBA(&pic, reinterpret_cast<uint8_t *>(s.buffer()), (int)stride);
 
     if(!ok) {
         std::cout<<"Could not create WebPPictureImportRGBA"<<std::endl;
     }
-
+    
     ok = WebPAnimEncoderAdd(enc, &pic, timestamp_ms, &config);
+
     if (!ok) {
         std::cout<<"Error while adding frame #"<<pic_num<<std::endl;
     }
+
     WebPPictureFree(&pic);
+
     timestamp_ms += duration;
     ++pic_num;
-
 }
+
 void WebpBuilder::argbTorgba(rlottie::Surface &s)
 {
     auto *buffer = reinterpret_cast<uint8_t *>(s.buffer());

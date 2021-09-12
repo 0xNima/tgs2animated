@@ -9,22 +9,45 @@
 #include "render.h"
 
 bool render(const std::string &lottieData, const std::string &outputPath) {
-    std::unique_ptr<rlottie::Animation> animation = rlottie::Animation::loadFromData(lottieData, std::to_string(1));
+    std::unique_ptr<rlottie::Animation> animation = rlottie::Animation::loadFromData(lottieData, std::to_string(1), "", false);
     if(!animation) {
         std::cout<<"Could no create animation, is your tgs file valid?"<<std::endl;
         return false;
     }
-
     auto buffer = std::unique_ptr<uint32_t[]>(new uint32_t[DataHolder::mWidth * DataHolder::mHeight]);
+    
     size_t frameCount = animation->totalFrame();
-    size_t frameDuration = animation->duration()*1000/frameCount;
-    // std::cout<<"frames = "<<animation->totalFrame()<<std::endl;
-    // std::cout<<"framerate = "<<animation->frameRate()<<std::endl;
-    WebpBuilder builder(outputPath, frameDuration);
-    for (size_t i=0; i < frameCount; i++) {
-        rlottie::Surface surface(buffer.get(), DataHolder::mWidth, DataHolder::mHeight, DataHolder::mWidth*4);
-        animation->renderSync(i, surface);
-        builder.addFrame(surface);
+    size_t frameDuration = (animation->duration ()*1000/frameCount);
+    
+
+    int index = -1;
+    int primes[13] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41};
+    
+    while (1) {
+        int n = ceil(((index + 1) / 2)) + 1;
+        frameDuration = (animation->duration()*1000/(frameCount / n));
+        WebpBuilder builder(outputPath, frameDuration);
+        for (int i = 0; i < frameCount; i++) {
+            bool __is = false;
+            for (int j=0; j< index+1; j++) {
+                if(i%primes[j] == 0) {
+                    __is = true;
+                    break;
+                }
+            }
+            if(__is) {
+                continue;
+            }
+            rlottie::Surface surface(buffer.get(), DataHolder::mWidth, DataHolder::mHeight, DataHolder::mWidth*4);
+            animation->renderSync(i, surface);
+            builder.addFrame(surface);
+        }
+        if (builder.finilize()) {
+            return true;
+        };
+        index++;
+        if (index >= 13) {
+            return false;
+        }
     }
-    return true;
 }

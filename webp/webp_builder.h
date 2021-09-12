@@ -15,12 +15,14 @@
 #include "src/webp/encode.h"
 #include "src/webp/mux.h"
 #include "../data/data_holder.h"
+
 class WebpBuilder {
 public:
     explicit WebpBuilder(const std::string &fileName, uint32_t timems);
     ~WebpBuilder();
     void addFrame(rlottie::Surface& s);
     static void argbTorgba(rlottie::Surface& s);
+    bool finilize();
 
 private:
     WebPData webp_data{};

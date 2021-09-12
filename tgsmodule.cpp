@@ -1,3 +1,4 @@
+#define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
 #include <iostream>
@@ -19,8 +20,11 @@ bool convert(const std::string& filePath, const std::string& output) {
         std::cerr<<"Could not open file "<<filePath<<std::endl;
         return -1;
     }
+
     const std::string decompressed = decompress(inputFile);
+    
     inputFile.close();
+
     return render(decompressed, output);
 }
 
