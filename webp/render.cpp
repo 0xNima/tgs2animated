@@ -21,11 +21,18 @@ bool render(const std::string &lottieData, const std::string &outputPath) {
     
 
     int index = -1;
-    int primes[13] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41};
+    int primes[15] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 47, 53};
     
     while (1) {
-        int n = ceil(((index + 1) / 2)) + 1;
-        frameDuration = (animation->duration()*1000/(frameCount / n));
+        int count = 0;
+        for (int i = 0; i < frameCount; i++) {
+            for (int j=0; j< index+1; j++) {
+                if(i%primes[j] == 0) {
+                    count ++;
+                }
+            }
+        } 
+        frameDuration = (animation->duration()*1000/frameCount) * (frameCount/(frameCount - count));
         WebpBuilder builder(outputPath, frameDuration);
         for (int i = 0; i < frameCount; i++) {
             bool __is = false;
@@ -46,7 +53,7 @@ bool render(const std::string &lottieData, const std::string &outputPath) {
             return true;
         };
         index++;
-        if (index >= 13) {
+        if (index >= 15) {
             return false;
         }
     }

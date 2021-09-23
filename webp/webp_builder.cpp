@@ -25,8 +25,7 @@ WebpBuilder::WebpBuilder(const std::string &fileName, uint32_t timems) {
 
 WebpBuilder::~WebpBuilder() {
     WebPAnimEncoderDelete(enc);
-    std::cout << "size: " << webp_data.size << std::endl;
-    if (webp_data.size <= (500000)){
+    if (webp_data.size <= (512000)){
         ok = ImgIoUtilWriteFile(const_cast<char*>(fileName.c_str()), webp_data.bytes, webp_data.size);
     }
     WebPDataClear(&webp_data);
@@ -43,8 +42,7 @@ bool WebpBuilder::finilize() {
         std::cout<<"Error during final animation assembly"<<std::endl;
     }
 
-    std::cout<<"current size: " << webp_data.size <<std::endl;
-    return (webp_data.size <= 500000);
+    return (webp_data.size <= 512000);
 }
 
 void WebpBuilder::addFrame(rlottie::Surface& s) {
