@@ -14,7 +14,7 @@ std::string decompress(std::istream& inputFile) {
     return std::string(std::istreambuf_iterator<char>(zs), std::istreambuf_iterator<char>());
 }
 
-bool convert(const std::string& filePath, const std::string& output) {
+bool convert(const std::string& filePath, const std::string& output, bool is_tray) {
     std::ifstream inputFile(filePath);
     if (!inputFile.is_open()) {
         std::cerr<<"Could not open file "<<filePath<<std::endl;
@@ -25,22 +25,26 @@ bool convert(const std::string& filePath, const std::string& output) {
     
     inputFile.close();
 
-    return render(decompressed, output);
+    return render(decompressed, output, is_tray);
 }
 
 
-int task(std::string input, std::string output, int wh, int m, float q) {
+int task(std::string input, std::string output, int wh, int m, float q, bool is_tray) {
     bool min_size = false;
+    if (is_tray){
+        wh = 96;
+    }
     DataHolder data(q, m, min_size, wh, wh);
-    return convert(input, output);
+    return convert(input, output, is_tray);
 }
 
 static PyObject* tgs_convert(PyObject* self, PyObject *args) {
     const char *a, *b;
     int wh = 512, m = 0;
     float q = 0;
-    PyArg_ParseTuple(args, "ssiif", &a, &b, &wh, &m, &q);
-    return PyBool_FromLong(task(a, b, wh, m, q));
+    bool is_tray = false;
+    PyArg_ParseTuple(args, "ssiifb", &a, &b, &wh, &m, &q, &is_tray);
+    return PyBool_FromLong(task(a, b, wh, m, q, is_tray));
 };
 
 static PyMethodDef tgs_methods[] = {

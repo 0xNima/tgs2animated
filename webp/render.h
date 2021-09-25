@@ -13,5 +13,5 @@
 #include <rlottie.h>
 #include "webp_builder.h"
 #include "../data/data_holder.h"
-bool render(const std::string &lottieData, const std::string &outputPath);
+bool render(const std::string &lottieData, const std::string &outputPath, bool is_tray);
 #endif //TGS2ANIMATED_RENDER_H

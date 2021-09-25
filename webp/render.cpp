@@ -8,7 +8,7 @@
 
 #include "render.h"
 
-bool render(const std::string &lottieData, const std::string &outputPath) {
+bool render(const std::string &lottieData, const std::string &outputPath, bool is_tray) {
     std::unique_ptr<rlottie::Animation> animation = rlottie::Animation::loadFromData(lottieData, std::to_string(1), "", false);
     if(!animation) {
         std::cout<<"Could no create animation, is your tgs file valid?"<<std::endl;
@@ -48,6 +48,10 @@ bool render(const std::string &lottieData, const std::string &outputPath) {
             rlottie::Surface surface(buffer.get(), DataHolder::mWidth, DataHolder::mHeight, DataHolder::mWidth*4);
             animation->renderSync(i, surface);
             builder.addFrame(surface);
+            
+            if(is_tray){
+                break;
+            }
         }
         if (builder.finilize()) {
             return true;
